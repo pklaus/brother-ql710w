@@ -1,0 +1,27 @@
+# Maintainer:  Philipp Klaus <philipp.l.klaus@web.de>
+pkgname=brother-ql710w-lpr
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="Brother LPR driver for P-Touch QL-710W labelprinter"
+url="http://solutions.brother.com/linux/en_us/"
+arch=('i686' 'x86_64')
+license=("custom:brother")
+depends=('cups' 'ghostscript')
+makedepends=('rpmextract')
+source=("http://download.brother.com/welcome/dlfp002197/ql710wlpr-${pkgver}-0.i386.rpm"
+        'license.txt')
+md5sums=('2f4631fed5e5630d0ddbdb4348be5cca'
+        '62bafd2f3325945fc40c5262f9ec82f1')
+noextract=("ql710wlpr-$pkgver-0.i386.rpm")
+install='lpr.install'
+
+build() {
+        cd $srcdir
+        rpmextract.sh "ql710wlpr-$pkgver-0.i386.rpm" || return 1
+        rm "ql710wlpr-$pkgver-0.i386.rpm"
+}
+
+package() {
+        mv usr opt $pkgdir/. || return 1
+        install -D -m644 license.txt $pkgdir/usr/share/licenses/$pkgname/license.txt || return 1
+}
